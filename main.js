@@ -26,17 +26,17 @@ window.onload = async function () {
     let a = await generateArray(numofelements(i));
     await new Promise((resolve, reject) => setTimeout(resolve, 1000)); //Wait a second before starting the test
     let starttime = window.performance.now();
-    await mergesort(a.slice(), a.length + 1); //Run on one background thread
+    await multithread(mergesort, [merge, compare])(a.slice(), a.length + 1); //Run on one background thread
     let endtime = window.performance.now();
     let singlethreadtime = endtime - starttime;
     table[i][1].data = `${singlethreadtime.toFixed(3)} milliseconds`;
 
     starttime = window.performance.now();
-    await mergesort(a.slice()); //Run in multithread
+    await multithread(mergesort, [merge, compare])(a.slice(), a.length / 4); //Run in multithread
     endtime = window.performance.now();
     let multithreadtime = endtime - starttime;
 
-    let improvment = (singlethreadtime - multithreadtime) * 100 / singlethreadtime;
+    let improvment = (1 - (multithreadtime / singlethreadtime)) * 100;
 
     table[i][2].parentElement.innerHTML = `${multithreadtime.toFixed(3)} milliseconds <b class="${(improvment>0)?"positive":"negative"}">(${improvment.toFixed(3)}%)</b>`;
   }
@@ -62,13 +62,13 @@ async function mergesort(a, max = 1 << 12) {
     let firsthalf, secondhalf;
     if (a.length < max) {
       //both run on same thread
-      firsthalf = mergesort(a.slice(0, middle), max);
-      secondhalf = mergesort(a.slice(middle), max);
+      firsthalf = mergesort(a.splice(0, middle), max);
+      secondhalf = mergesort(a, max);
     } else {
       //run on different thread
-      firsthalf = multithread(mergesort, [merge, compare])(a.slice(0, middle), max);
+      firsthalf = multithread(mergesort, [merge, compare])(a.splice(0, middle), max);
       //this can run on the same thread
-      secondhalf = mergesort(a.slice(middle), max);
+      secondhalf = mergesort(a, max);
     }
     [firsthalf, secondhalf] = await Promise.all([firsthalf, secondhalf]);
     a = merge(firsthalf, secondhalf);

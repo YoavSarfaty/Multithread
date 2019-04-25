@@ -18,3 +18,4 @@ multithread(myFunction, [otherFunction])(myArg)
 That's it, it's as simple as that!
 
 ## Performance
+You can measure the performance [in this merge sort test.](https://yoavsarfaty.github.io/Multithread/)

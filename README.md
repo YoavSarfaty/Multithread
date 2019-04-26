@@ -18,4 +18,6 @@ multithread(myFunction, [otherFunction])(myArg)
 That's it, it's as simple as that!
 
 ## Performance
+![](https://yoavsarfaty.github.io/Multithread/Performance%20on%20core%20i7-8550U.svg)
+
 You can measure the performance [in this merge sort test.](https://yoavsarfaty.github.io/Multithread/)

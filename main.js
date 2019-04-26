@@ -26,13 +26,13 @@ window.onload = async function () {
     let a = await generateArray(numofelements(i));
     await new Promise((resolve, reject) => setTimeout(resolve, 1000)); //Wait a second before starting the test
     let starttime = window.performance.now();
-    await multithread(mergesort, [merge, compare])(a.slice(), a.length + 1); //Run on one background thread
+    console.log(await multithread(mergesort, [merge, compare])(a.slice(), a.length + 1)); //Run on one background thread
     let endtime = window.performance.now();
     let singlethreadtime = endtime - starttime;
     table[i][1].data = `${singlethreadtime.toFixed(3)} milliseconds`;
 
     starttime = window.performance.now();
-    await multithread(mergesort, [merge, compare])(a.slice(), a.length / 4); //Run in multithread
+    console.log(await multithread(mergesort, [merge, compare])(a.slice(), a.length / 4)); //Run in multithread
     endtime = window.performance.now();
     let multithreadtime = endtime - starttime;
 
@@ -78,17 +78,21 @@ async function mergesort(a, max = 1 << 12) {
 
 function merge(a, b) {
   let r = [];
-  while (a.length + b.length > 0) {
-    if (b.length == 0) {
-      return r.concat(a);
+  let ai = 0;
+  let bi = 0;
+  while (a.length + b.length > ai + bi) {
+    if (b.length == bi) {
+      return r.concat(a.splice(ai));
     }
-    if (a.length == 0) {
-      return r.concat(b);
+    if (a.length == ai) {
+      return r.concat(b.splice(bi));
     }
-    if (compare(b[0], a[0])) {
-      r.push(a.shift());
+    if (compare(b[bi], a[ai])) {
+      r.push(a[ai]);
+      ai++;
     } else {
-      r.push(b.shift());
+      r.push(b[bi]);
+      bi++;
     }
   }
 }

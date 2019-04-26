@@ -43,7 +43,7 @@ window.onload = async function () {
 }
 
 function numofelements(i) {
-  return (1 + i) * 10000;
+  return (1 + i) * 50000;
 }
 
 //for format
@@ -53,7 +53,7 @@ function numberWithCommas(x) {
 
 // All arrays are generated on a different thread 'cause I can
 const generateArray = multithread(async function (arraysize) {
-  return new Array(arraysize).fill().map(() => (Math.random()));
+  return new Array(arraysize).fill().map(() => (Math.round(Math.random() * arraysize * 10)));
 });
 
 async function mergesort(a, max = 1 << 12) {
